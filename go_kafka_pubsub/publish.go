@@ -45,6 +45,7 @@ func (c *Counter) Value() int32 {
 	return c.value
 }
 
+// Push Message every 10 seconds to Kafka
 func Publish(ctx context.Context, topic string) {
 	ticker := time.NewTicker(time.Second * 10)
 	defer ticker.Stop()
@@ -66,14 +67,14 @@ func Publish(ctx context.Context, topic string) {
 			msg := NewMsg(val, fmt.Sprintf("%s_%s_%d", topic, "test", val))
 			GlobalCounter.Increment()
 
-			// Send record to Kafka
+			// Send message to Kafka
 			err := pushMsg(ctx, writer, msg, topic)
 			if err != nil {
-				logrus.Error("Error sending record to Kafka: ", err)
+				logrus.Error("Error sending a message to Kafka: ", err)
 				continue
 			}
 
-			logrus.Infof("Record sent to Kafka: %+v on Topic: %s\n", msg, topic)
+			logrus.Infof("Message sent to Kafka: %+v on Topic: %s\n", msg, topic)
 		}
 	}
 
