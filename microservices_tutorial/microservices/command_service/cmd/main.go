@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// Create a listener on TCP port
-	port := 8080
+	port := 8081
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		logrus.Fatal("failed to listen: ", err)

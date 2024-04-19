@@ -1,4 +1,4 @@
-module microservice_tutorial
+module command_service
 
 go 1.22.2
 

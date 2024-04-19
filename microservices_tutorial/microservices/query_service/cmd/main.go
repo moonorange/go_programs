@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// Create a listener on TCP port
-	port := 8080
+	port := 8082
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		logrus.Fatal("failed to listen: ", err)
@@ -31,12 +31,12 @@ func main() {
 		if err := s.Serve(listener); err != nil {
 			logrus.Fatal("failed to serve: ", err)
 		}
-		logrus.Printf("Command service is running on port %d", port)
+		logrus.Printf("Query service is running on port %d", port)
 	}()
 
 	// Wait for a signal to stop the server
 	sig := <-sigChan
-	logrus.Printf("Command service is shutting down: %s", sig)
+	logrus.Printf("Query service is shutting down: %s", sig)
 
 	// Stop the gRPC server gracefully
 	s.GracefulStop()
