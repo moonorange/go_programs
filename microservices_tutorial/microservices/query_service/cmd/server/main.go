@@ -3,8 +3,6 @@ package main
 import (
 	"net/http"
 
-	handler "query_service/handler"
-
 	connect "github.com/protogo/gen/genconnect"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/http2"
@@ -16,7 +14,7 @@ func main() {
 	const host = "localhost:8082"
 
 	mux := http.NewServeMux()
-	path, handler := connect.NewTaskServiceHandler(handler.TaskHandler{})
+	path, handler := connect.NewTaskServiceHandler(TaskHandler{})
 	mux.Handle(path, handler)
 	logrus.Println("... Listening on", host)
 
@@ -29,4 +27,8 @@ func main() {
 	if err != nil {
 		logrus.Fatal("failed to serve: ", err)
 	}
+}
+
+type TaskHandler struct {
+	connect.UnimplementedTaskServiceHandler
 }

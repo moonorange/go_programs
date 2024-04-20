@@ -3,8 +3,6 @@ package main
 import (
 	"net/http"
 
-	handler "command_service/handler"
-
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -17,7 +15,7 @@ func main() {
 	const host = "localhost:8081"
 
 	mux := http.NewServeMux()
-	path, handler := connect.NewTaskServiceHandler(handler.TaskHandler{})
+	path, handler := connect.NewTaskServiceHandler(TaskHandler{})
 	mux.Handle(path, handler)
 	logrus.Println("... Listening on", host)
 
@@ -30,4 +28,9 @@ func main() {
 	if err != nil {
 		logrus.Fatal("failed to serve: ", err)
 	}
+}
+
+// TaskServer implements the TaskService API.
+type TaskHandler struct {
+	connect.UnimplementedTaskServiceHandler
 }
