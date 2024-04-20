@@ -10,8 +10,6 @@ package task;
 service TaskService {
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
   rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
-  rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty);
-  rpc ListTasks(google.protobuf.Empty) returns (ListTasksResponse);
   rpc ListTasksByTag(ListTasksByTagRequest) returns (ListTasksByTagResponse);
 }
 
@@ -36,14 +34,6 @@ message GetTaskRequest {
 
 message GetTaskResponse {
   Task task = 1;
-}
-
-message DeleteTaskRequest {
-  string task_id = 1;
-}
-
-message ListTasksResponse {
-   repeated Task tasks = 1;
 }
 
 message ListTasksByTagRequest {
