@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	gen "github.com/gomicroservice/gen"
+	gen "github.com/protogo/gen"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"

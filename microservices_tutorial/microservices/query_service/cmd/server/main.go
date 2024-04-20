@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	gen "github.com/gomicroservice/gen"
+	gen "github.com/protogo/gen"
 )
 
 func main() {
