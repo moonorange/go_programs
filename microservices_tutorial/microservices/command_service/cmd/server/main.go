@@ -1,43 +1,33 @@
 package main
 
 import (
-	"fmt"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
+	"net/http"
+
+	handler "command_service/handler"
 
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
+	"golang.org/x/sync/errgroup"
+
+	connect "github.com/protogo/gen/genconnect"
 )
 
 func main() {
-	// Create a listener on TCP port
-	port := 8080
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-	if err != nil {
-		logrus.Fatal("failed to listen: ", err)
-	}
+	const host = "localhost:8081"
 
-	// Create a gRPC server
-	s := grpc.NewServer()
+	mux := http.NewServeMux()
+	path, handler := connect.NewTaskServiceHandler(handler.TaskHandler{})
+	mux.Handle(path, handler)
+	logrus.Println("... Listening on", host)
 
-	// Listen for OS signals to stop the server when receiving a cancel signal
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
+	eg := errgroup.Group{}
 	// Start the gRPC server
-	go func() {
-		if err := s.Serve(listener); err != nil {
-			logrus.Fatal("failed to serve: ", err)
-		}
-		logrus.Printf("Command service is running on port %d", port)
-	}()
+	eg.Go(func() error { return http.ListenAndServe(host, h2c.NewHandler(mux, &http2.Server{})) })
+	logrus.Printf("Command service is running on host %s", host)
 
-	// Wait for a signal to stop the server
-	sig := <-sigChan
-	logrus.Printf("Command service is shutting down: %s", sig)
-
-	// Stop the gRPC server gracefully
-	s.GracefulStop()
+	err := eg.Wait()
+	if err != nil {
+		logrus.Fatal("failed to serve: ", err)
+	}
 }

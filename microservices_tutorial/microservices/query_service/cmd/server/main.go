@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	const host = "localhost:8080"
+	const host = "localhost:8082"
 
 	mux := http.NewServeMux()
 	path, handler := connect.NewTaskServiceHandler(handler.TaskHandler{})
@@ -23,7 +23,7 @@ func main() {
 	eg := errgroup.Group{}
 	// Start the gRPC server
 	eg.Go(func() error { return http.ListenAndServe(host, h2c.NewHandler(mux, &http2.Server{})) })
-	logrus.Printf("Command service is running on host %s", host)
+	logrus.Printf("Query service is running on host %s", host)
 
 	err := eg.Wait()
 	if err != nil {
