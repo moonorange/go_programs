@@ -38,37 +38,32 @@ const (
 	TaskServiceCreateTaskProcedure = "/task.TaskService/CreateTask"
 	// TaskServiceGetTaskProcedure is the fully-qualified name of the TaskService's GetTask RPC.
 	TaskServiceGetTaskProcedure = "/task.TaskService/GetTask"
-	// TaskServiceListTasksProcedure is the fully-qualified name of the TaskService's ListTasks RPC.
-	TaskServiceListTasksProcedure = "/task.TaskService/ListTasks"
 	// TaskServiceDeleteTaskProcedure is the fully-qualified name of the TaskService's DeleteTask RPC.
 	TaskServiceDeleteTaskProcedure = "/task.TaskService/DeleteTask"
+	// TaskServiceListTasksProcedure is the fully-qualified name of the TaskService's ListTasks RPC.
+	TaskServiceListTasksProcedure = "/task.TaskService/ListTasks"
 	// TaskServiceListTasksByTagProcedure is the fully-qualified name of the TaskService's
 	// ListTasksByTag RPC.
 	TaskServiceListTasksByTagProcedure = "/task.TaskService/ListTasksByTag"
-	// TaskServiceListTasksByDueDateProcedure is the fully-qualified name of the TaskService's
-	// ListTasksByDueDate RPC.
-	TaskServiceListTasksByDueDateProcedure = "/task.TaskService/ListTasksByDueDate"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	taskServiceServiceDescriptor                  = gen.File_task_proto.Services().ByName("TaskService")
-	taskServiceCreateTaskMethodDescriptor         = taskServiceServiceDescriptor.Methods().ByName("CreateTask")
-	taskServiceGetTaskMethodDescriptor            = taskServiceServiceDescriptor.Methods().ByName("GetTask")
-	taskServiceListTasksMethodDescriptor          = taskServiceServiceDescriptor.Methods().ByName("ListTasks")
-	taskServiceDeleteTaskMethodDescriptor         = taskServiceServiceDescriptor.Methods().ByName("DeleteTask")
-	taskServiceListTasksByTagMethodDescriptor     = taskServiceServiceDescriptor.Methods().ByName("ListTasksByTag")
-	taskServiceListTasksByDueDateMethodDescriptor = taskServiceServiceDescriptor.Methods().ByName("ListTasksByDueDate")
+	taskServiceServiceDescriptor              = gen.File_task_proto.Services().ByName("TaskService")
+	taskServiceCreateTaskMethodDescriptor     = taskServiceServiceDescriptor.Methods().ByName("CreateTask")
+	taskServiceGetTaskMethodDescriptor        = taskServiceServiceDescriptor.Methods().ByName("GetTask")
+	taskServiceDeleteTaskMethodDescriptor     = taskServiceServiceDescriptor.Methods().ByName("DeleteTask")
+	taskServiceListTasksMethodDescriptor      = taskServiceServiceDescriptor.Methods().ByName("ListTasks")
+	taskServiceListTasksByTagMethodDescriptor = taskServiceServiceDescriptor.Methods().ByName("ListTasksByTag")
 )
 
 // TaskServiceClient is a client for the task.TaskService service.
 type TaskServiceClient interface {
 	CreateTask(context.Context, *connect.Request[gen.CreateTaskRequest]) (*connect.Response[gen.CreateTaskResponse], error)
 	GetTask(context.Context, *connect.Request[gen.GetTaskRequest]) (*connect.Response[gen.GetTaskResponse], error)
-	ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error)
 	DeleteTask(context.Context, *connect.Request[gen.DeleteTaskRequest]) (*connect.Response[emptypb.Empty], error)
+	ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error)
 	ListTasksByTag(context.Context, *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error)
-	ListTasksByDueDate(context.Context, *connect.Request[gen.ListTasksByDueDateRequest]) (*connect.Response[gen.ListTasksByDueDateResponse], error)
 }
 
 // NewTaskServiceClient constructs a client for the task.TaskService service. By default, it uses
@@ -93,16 +88,16 @@ func NewTaskServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(taskServiceGetTaskMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		listTasks: connect.NewClient[emptypb.Empty, gen.ListTasksResponse](
-			httpClient,
-			baseURL+TaskServiceListTasksProcedure,
-			connect.WithSchema(taskServiceListTasksMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 		deleteTask: connect.NewClient[gen.DeleteTaskRequest, emptypb.Empty](
 			httpClient,
 			baseURL+TaskServiceDeleteTaskProcedure,
 			connect.WithSchema(taskServiceDeleteTaskMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listTasks: connect.NewClient[emptypb.Empty, gen.ListTasksResponse](
+			httpClient,
+			baseURL+TaskServiceListTasksProcedure,
+			connect.WithSchema(taskServiceListTasksMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listTasksByTag: connect.NewClient[gen.ListTasksByTagRequest, gen.ListTasksByTagResponse](
@@ -111,23 +106,16 @@ func NewTaskServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(taskServiceListTasksByTagMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		listTasksByDueDate: connect.NewClient[gen.ListTasksByDueDateRequest, gen.ListTasksByDueDateResponse](
-			httpClient,
-			baseURL+TaskServiceListTasksByDueDateProcedure,
-			connect.WithSchema(taskServiceListTasksByDueDateMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 	}
 }
 
 // taskServiceClient implements TaskServiceClient.
 type taskServiceClient struct {
-	createTask         *connect.Client[gen.CreateTaskRequest, gen.CreateTaskResponse]
-	getTask            *connect.Client[gen.GetTaskRequest, gen.GetTaskResponse]
-	listTasks          *connect.Client[emptypb.Empty, gen.ListTasksResponse]
-	deleteTask         *connect.Client[gen.DeleteTaskRequest, emptypb.Empty]
-	listTasksByTag     *connect.Client[gen.ListTasksByTagRequest, gen.ListTasksByTagResponse]
-	listTasksByDueDate *connect.Client[gen.ListTasksByDueDateRequest, gen.ListTasksByDueDateResponse]
+	createTask     *connect.Client[gen.CreateTaskRequest, gen.CreateTaskResponse]
+	getTask        *connect.Client[gen.GetTaskRequest, gen.GetTaskResponse]
+	deleteTask     *connect.Client[gen.DeleteTaskRequest, emptypb.Empty]
+	listTasks      *connect.Client[emptypb.Empty, gen.ListTasksResponse]
+	listTasksByTag *connect.Client[gen.ListTasksByTagRequest, gen.ListTasksByTagResponse]
 }
 
 // CreateTask calls task.TaskService.CreateTask.
@@ -140,14 +128,14 @@ func (c *taskServiceClient) GetTask(ctx context.Context, req *connect.Request[ge
 	return c.getTask.CallUnary(ctx, req)
 }
 
-// ListTasks calls task.TaskService.ListTasks.
-func (c *taskServiceClient) ListTasks(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error) {
-	return c.listTasks.CallUnary(ctx, req)
-}
-
 // DeleteTask calls task.TaskService.DeleteTask.
 func (c *taskServiceClient) DeleteTask(ctx context.Context, req *connect.Request[gen.DeleteTaskRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteTask.CallUnary(ctx, req)
+}
+
+// ListTasks calls task.TaskService.ListTasks.
+func (c *taskServiceClient) ListTasks(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error) {
+	return c.listTasks.CallUnary(ctx, req)
 }
 
 // ListTasksByTag calls task.TaskService.ListTasksByTag.
@@ -155,19 +143,13 @@ func (c *taskServiceClient) ListTasksByTag(ctx context.Context, req *connect.Req
 	return c.listTasksByTag.CallUnary(ctx, req)
 }
 
-// ListTasksByDueDate calls task.TaskService.ListTasksByDueDate.
-func (c *taskServiceClient) ListTasksByDueDate(ctx context.Context, req *connect.Request[gen.ListTasksByDueDateRequest]) (*connect.Response[gen.ListTasksByDueDateResponse], error) {
-	return c.listTasksByDueDate.CallUnary(ctx, req)
-}
-
 // TaskServiceHandler is an implementation of the task.TaskService service.
 type TaskServiceHandler interface {
 	CreateTask(context.Context, *connect.Request[gen.CreateTaskRequest]) (*connect.Response[gen.CreateTaskResponse], error)
 	GetTask(context.Context, *connect.Request[gen.GetTaskRequest]) (*connect.Response[gen.GetTaskResponse], error)
-	ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error)
 	DeleteTask(context.Context, *connect.Request[gen.DeleteTaskRequest]) (*connect.Response[emptypb.Empty], error)
+	ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error)
 	ListTasksByTag(context.Context, *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error)
-	ListTasksByDueDate(context.Context, *connect.Request[gen.ListTasksByDueDateRequest]) (*connect.Response[gen.ListTasksByDueDateResponse], error)
 }
 
 // NewTaskServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -188,16 +170,16 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(taskServiceGetTaskMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	taskServiceListTasksHandler := connect.NewUnaryHandler(
-		TaskServiceListTasksProcedure,
-		svc.ListTasks,
-		connect.WithSchema(taskServiceListTasksMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	taskServiceDeleteTaskHandler := connect.NewUnaryHandler(
 		TaskServiceDeleteTaskProcedure,
 		svc.DeleteTask,
 		connect.WithSchema(taskServiceDeleteTaskMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	taskServiceListTasksHandler := connect.NewUnaryHandler(
+		TaskServiceListTasksProcedure,
+		svc.ListTasks,
+		connect.WithSchema(taskServiceListTasksMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	taskServiceListTasksByTagHandler := connect.NewUnaryHandler(
@@ -206,26 +188,18 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(taskServiceListTasksByTagMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	taskServiceListTasksByDueDateHandler := connect.NewUnaryHandler(
-		TaskServiceListTasksByDueDateProcedure,
-		svc.ListTasksByDueDate,
-		connect.WithSchema(taskServiceListTasksByDueDateMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/task.TaskService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TaskServiceCreateTaskProcedure:
 			taskServiceCreateTaskHandler.ServeHTTP(w, r)
 		case TaskServiceGetTaskProcedure:
 			taskServiceGetTaskHandler.ServeHTTP(w, r)
-		case TaskServiceListTasksProcedure:
-			taskServiceListTasksHandler.ServeHTTP(w, r)
 		case TaskServiceDeleteTaskProcedure:
 			taskServiceDeleteTaskHandler.ServeHTTP(w, r)
+		case TaskServiceListTasksProcedure:
+			taskServiceListTasksHandler.ServeHTTP(w, r)
 		case TaskServiceListTasksByTagProcedure:
 			taskServiceListTasksByTagHandler.ServeHTTP(w, r)
-		case TaskServiceListTasksByDueDateProcedure:
-			taskServiceListTasksByDueDateHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -243,18 +217,14 @@ func (UnimplementedTaskServiceHandler) GetTask(context.Context, *connect.Request
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.GetTask is not implemented"))
 }
 
-func (UnimplementedTaskServiceHandler) ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.ListTasks is not implemented"))
-}
-
 func (UnimplementedTaskServiceHandler) DeleteTask(context.Context, *connect.Request[gen.DeleteTaskRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.DeleteTask is not implemented"))
 }
 
-func (UnimplementedTaskServiceHandler) ListTasksByTag(context.Context, *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.ListTasksByTag is not implemented"))
+func (UnimplementedTaskServiceHandler) ListTasks(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[gen.ListTasksResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.ListTasks is not implemented"))
 }
 
-func (UnimplementedTaskServiceHandler) ListTasksByDueDate(context.Context, *connect.Request[gen.ListTasksByDueDateRequest]) (*connect.Response[gen.ListTasksByDueDateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.ListTasksByDueDate is not implemented"))
+func (UnimplementedTaskServiceHandler) ListTasksByTag(context.Context, *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("task.TaskService.ListTasksByTag is not implemented"))
 }

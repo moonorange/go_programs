@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"net/http"
 
-	connect "github.com/protogo/gen/genconnect"
+	connect "connectrpc.com/connect"
+	"github.com/protogo/gen"
+	"github.com/protogo/gen/genconnect"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -14,7 +17,7 @@ func main() {
 	const host = "localhost:8082"
 
 	mux := http.NewServeMux()
-	path, handler := connect.NewTaskServiceHandler(TaskServer{})
+	path, handler := genconnect.NewTaskServiceHandler(&taskServer{})
 	mux.Handle(path, handler)
 	logrus.Println("... Listening on", host)
 
@@ -29,6 +32,10 @@ func main() {
 	}
 }
 
-type TaskServer struct {
-	connect.UnimplementedTaskServiceHandler
+type taskServer struct {
+	genconnect.UnimplementedTaskServiceHandler
+}
+
+func (t *taskServer) ListTasksByTag(ctx context.Context, req *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error) {
+	return &connect.Response[gen.ListTasksByTagResponse]{}, nil
 }
