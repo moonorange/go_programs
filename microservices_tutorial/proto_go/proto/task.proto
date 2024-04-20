@@ -10,23 +10,19 @@ package task;
 service TaskService {
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
   rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
-  rpc ListTasks(google.protobuf.Empty) returns (ListTasksResponse);
   rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty);
   rpc ListTasksByTag(ListTasksByTagRequest) returns (ListTasksByTagResponse);
-  rpc ListTasksByDueDate(ListTasksByDueDateRequest) returns (ListTasksByDueDateResponse);
 }
 
 message Task {
   int32 id = 1;
   string text = 2;
   repeated string tags = 3;
-  int64 due = 4;
 }
 
 message CreateTaskRequest {
   string text = 1;
   repeated string tags = 2;
-  int64 due = 3;
 }
 
 message CreateTaskResponse {
@@ -41,10 +37,6 @@ message GetTaskResponse {
   Task task = 1;
 }
 
-message ListTasksResponse {
-  repeated Task tasks = 1; // Add fields as needed for returning a list of tasks
-}
-
 message DeleteTaskRequest {
   string task_id = 1;
 }
@@ -54,15 +46,5 @@ message ListTasksByTagRequest {
 }
 
 message ListTasksByTagResponse {
-   repeated Task tasks = 1; // Add fields as needed for returning a list of tasks
-}
-
-message ListTasksByDueDateRequest {
-  int32 year = 1;
-  int32 month = 2;
-  int32 day = 3;
-}
-
-message ListTasksByDueDateResponse {
-   repeated Task tasks = 1; 
+   repeated Task tasks = 1;
 }

@@ -14,7 +14,7 @@ func main() {
 	const host = "localhost:8082"
 
 	mux := http.NewServeMux()
-	path, handler := connect.NewTaskServiceHandler(TaskHandler{})
+	path, handler := connect.NewTaskServiceHandler(TaskServer{})
 	mux.Handle(path, handler)
 	logrus.Println("... Listening on", host)
 
@@ -29,6 +29,6 @@ func main() {
 	}
 }
 
-type TaskHandler struct {
+type TaskServer struct {
 	connect.UnimplementedTaskServiceHandler
 }
