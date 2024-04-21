@@ -2,19 +2,30 @@
 
 package model
 
+import (
+	"time"
+)
+
+type Attachment struct {
+	Name     string     `json:"Name"`
+	Date     *time.Time `json:"Date,omitempty"`
+	Contents *string    `json:"Contents,omitempty"`
+}
+
 type Mutation struct {
 }
 
+type NewAttachment struct {
+	Name     string     `json:"Name"`
+	Date     *time.Time `json:"Date,omitempty"`
+	Contents *string    `json:"Contents,omitempty"`
+}
+
 type NewTask struct {
-	Text string   `json:"Text"`
-	Tags []string `json:"Tags,omitempty"`
+	Text        string           `json:"Text"`
+	Tags        []string         `json:"Tags,omitempty"`
+	Attachments []*NewAttachment `json:"Attachments,omitempty"`
 }
 
 type Query struct {
-}
-
-type Task struct {
-	ID   string   `json:"Id"`
-	Text string   `json:"Text"`
-	Tags []string `json:"Tags,omitempty"`
 }

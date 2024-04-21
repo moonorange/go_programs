@@ -25,11 +25,20 @@ func (r *queryResolver) GetTasksByTag(ctx context.Context, tag string) ([]*model
 	panic(fmt.Errorf("not implemented: GetTasksByTag - getTasksByTag"))
 }
 
+// Attachments is the resolver for the Attachments field.
+func (r *taskResolver) Attachments(ctx context.Context, obj *model.Task) ([]*model.Attachment, error) {
+	panic(fmt.Errorf("not implemented: Attachments - Attachments"))
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Task returns TaskResolver implementation.
+func (r *Resolver) Task() TaskResolver { return &taskResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type taskResolver struct{ *Resolver }

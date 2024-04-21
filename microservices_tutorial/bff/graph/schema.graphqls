@@ -12,9 +12,26 @@ type Task {
   Id: ID!
   Text: String!
   Tags: [String!]
+  Attachments: [Attachment!]
 }
 
 input NewTask {
   Text: String!
   Tags: [String!]
+  Attachments: [NewAttachment!]
+
+}
+
+scalar Time
+
+type Attachment {
+  Name: String!
+  Date: Time
+  Contents: String
+}
+
+input NewAttachment {
+  Name: String!
+  Date: Time
+  Contents: String
 }
