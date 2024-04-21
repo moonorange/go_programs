@@ -2,12 +2,10 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
+	"strconv"
 
-	connect "connectrpc.com/connect"
+	"connectrpc.com/connect"
 	"github.com/protogo/gen"
 	"github.com/protogo/gen/genconnect"
 	"github.com/sirupsen/logrus"
@@ -39,44 +37,30 @@ type taskServer struct {
 	genconnect.UnimplementedTaskServiceHandler
 }
 
-// Task represents a task item
-type Task struct {
-	ID   int32    `json:"id"`
-	Text string   `json:"text"`
-	Tags []string `json:"tags"`
+// Just return a task for simplicity
+func (t *taskServer) GetTask(ctx context.Context, req *connect.Request[gen.GetTaskRequest]) (*connect.Response[gen.GetTaskResponse], error) {
+	id, _ := strconv.ParseInt(req.Msg.TaskId, 10, 32)
+	task := gen.Task{
+		Id:   int32(id),
+		Text: "This is a task",
+		Tags: []string{"tag1", "tag2"},
+	}
+	return connect.NewResponse(&gen.GetTaskResponse{Task: &task}), nil
 }
 
+// Just return a list of tasks for simplicity
 func (t *taskServer) ListTasksByTag(ctx context.Context, req *connect.Request[gen.ListTasksByTagRequest]) (*connect.Response[gen.ListTasksByTagResponse], error) {
-	// Define the path to the JSON file containing tasks
-	// Use a json file for simplicity, but in a real-world scenario this would come from a database
-	filePath := "../../../file_storage/task.json"
-
-	// Read the content of the JSON file
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %v", err)
+	tasks := []*gen.Task{
+		{
+			Id:   1,
+			Text: "This is a task",
+			Tags: []string{req.Msg.TagName},
+		},
+		{
+			Id:   2,
+			Text: "This is a task",
+			Tags: []string{req.Msg.TagName},
+		},
 	}
-
-	// Check if the file is empty
-	if len(data) == 0 {
-		return connect.NewResponse(&gen.ListTasksByTagResponse{Tasks: nil}), nil
-	}
-
-	// Unmarshal the JSON data into a slice of Task structs
-	var tasks []*gen.Task
-	if err := json.Unmarshal(data, &tasks); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
-	}
-
-	// Filter tasks by the specified tag
-	var filteredTasks []*gen.Task
-	for _, task := range tasks {
-		for _, t := range task.Tags {
-			if t == req.Msg.TagName {
-				filteredTasks = append(filteredTasks, task)
-				break
-			}
-		}
-	}
-	return connect.NewResponse(&gen.ListTasksByTagResponse{Tasks: filteredTasks}), nil
+	return connect.NewResponse(&gen.ListTasksByTagResponse{Tasks: tasks}), nil
 }
