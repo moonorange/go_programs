@@ -7,12 +7,12 @@ import (
 	"github.com/protogo/gen/genconnect"
 )
 
-func NewTaskServiceClient(address string) genconnect.TaskServiceClient {
+func NewTaskServiceClient(baseURL string) genconnect.TaskServiceClient {
 	// Set up a connection to the server.
 	// Create a gRPC client using the connect.WithGRPC() option
 	client := genconnect.NewTaskServiceClient(
 		http.DefaultClient,
-		address,
+		baseURL,
 		connect.WithGRPC(),
 	)
 
