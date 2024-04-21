@@ -1,20 +1,20 @@
 type Query {
-    getTask(id: ID!): Task
+  getTask(id: ID!): Task
 
-    getTasksByTag(tag: String!): [Task]
+  getTasksByTag(tag: String!): [Task]
 }
 
 type Mutation {
-    createTask(input: NewTask!): Task!
+  createTask(input: NewTask!): Task!
 }
 
 type Task {
-    Id: ID!
-    Text: String!
-    Tags: [String!]
+  Id: ID!
+  Text: String!
+  Tags: [String!]
 }
 
 input NewTask {
-    Text: String!
-    Tags: [String!]
+  Text: String!
+  Tags: [String!]
 }

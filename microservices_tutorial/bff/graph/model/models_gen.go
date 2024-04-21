@@ -5,22 +5,16 @@ package model
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type NewTask struct {
+	Text string   `json:"Text"`
+	Tags []string `json:"Tags,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type Task struct {
+	ID   string   `json:"Id"`
+	Text string   `json:"Text"`
+	Tags []string `json:"Tags,omitempty"`
 }

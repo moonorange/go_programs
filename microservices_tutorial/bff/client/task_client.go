@@ -12,7 +12,7 @@ func NewTaskServiceClient(address string) genconnect.TaskServiceClient {
 	// Create a gRPC client using the connect.WithGRPC() option
 	client := genconnect.NewTaskServiceClient(
 		http.DefaultClient,
-		address, // BaseURL is not needed for gRPC
+		address,
 		connect.WithGRPC(),
 	)
 
