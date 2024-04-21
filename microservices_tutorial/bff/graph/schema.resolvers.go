@@ -16,7 +16,8 @@ import (
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
-	tc := client.NewTaskServiceClient("localhost:8081")
+	// Access to command service
+	tc := client.NewTaskServiceClient("http://localhost:8081")
 	res, err := tc.CreateTask(ctx, connect.NewRequest(&gen.CreateTaskRequest{
 		Text: "task1",
 		Tags: []string{"tag1"},
@@ -33,7 +34,8 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) 
 
 // GetTask is the resolver for the getTask field.
 func (r *queryResolver) GetTask(ctx context.Context, id string) (*model.Task, error) {
-	tc := client.NewTaskServiceClient("localhost:8081")
+	// Access to query service
+	tc := client.NewTaskServiceClient("http://localhost:8082")
 	res, err := tc.GetTask(ctx, connect.NewRequest(&gen.GetTaskRequest{
 		TaskId: "1",
 	}))
@@ -48,7 +50,8 @@ func (r *queryResolver) GetTask(ctx context.Context, id string) (*model.Task, er
 
 // GetTasksByTag is the resolver for the getTasksByTag field.
 func (r *queryResolver) GetTasksByTag(ctx context.Context, tag string) ([]*model.Task, error) {
-	tc := client.NewTaskServiceClient("localhost:8081")
+	// Access to query service
+	tc := client.NewTaskServiceClient("http://localhost:8082")
 	res, err := tc.ListTasksByTag(ctx, connect.NewRequest(&gen.ListTasksByTagRequest{
 		TagName: "tag1",
 	}))
@@ -64,6 +67,7 @@ func (r *queryResolver) GetTasksByTag(ctx context.Context, tag string) ([]*model
 }
 
 // Attachments is the resolver for the Attachments field.
+// If assuming it fetches data from DB, it can reduce the unnecessary query to storage by implementing attachment resolver
 func (r *taskResolver) Attachments(ctx context.Context, obj *model.Task) ([]*model.Attachment, error) {
 	now := time.Now()
 	contents := "contents"
