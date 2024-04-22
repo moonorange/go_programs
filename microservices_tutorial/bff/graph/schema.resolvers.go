@@ -67,10 +67,12 @@ func (r *queryResolver) GetTasksByTag(ctx context.Context, tag string) ([]*model
 }
 
 // Attachments is the resolver for the Attachments field.
-// If assuming it fetches data from DB, it can reduce the unnecessary query to storage by implementing attachment resolver
+// By assuming it fetches data from DB, this function can reduce the unnecessary query to storage.
 func (r *taskResolver) Attachments(ctx context.Context, obj *model.Task) ([]*model.Attachment, error) {
 	now := time.Now()
 	contents := "contents"
+	// Sleep 1 second to see the difference of response time with or without Attachment field.
+	time.Sleep(1 * time.Second)
 	return []*model.Attachment{{Name: "attachment", Date: &now, Contents: &contents}}, nil
 }
 
