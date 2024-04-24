@@ -27,4 +27,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/protogo => ../proto_go
+replace github.com/protogo => ./proto_go

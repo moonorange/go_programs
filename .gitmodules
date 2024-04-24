@@ -1,0 +1,3 @@
+[submodule "gomicroservice"]
+	path = gomicroservice
+	url = git@github.com:moonorange/gomicroservice.git
