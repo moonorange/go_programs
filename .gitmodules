@@ -1,3 +1,6 @@
 [submodule "gomicroservice"]
 	path = gomicroservice
 	url = git@github.com:moonorange/gomicroservice.git
+[submodule "go_saga"]
+	path = go_saga
+	url = git@github.com:moonorange/go_saga.git
