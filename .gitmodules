@@ -6,4 +6,4 @@
 	url = git@github.com:moonorange/go_saga.git
 [submodule "go_csv"]
 	path = go_csv
-	url = https://github.com/moonorange/go_generate_csv.git
+	url = git@github.com:moonorange/go_generate_csv.git
