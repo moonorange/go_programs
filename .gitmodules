@@ -7,3 +7,6 @@
 [submodule "go_csv"]
 	path = go_csv
 	url = git@github.com:moonorange/go_generate_csv.git
+[submodule "go_api"]
+	path = go_api
+	url = git@github.com:moonorange/go_api.git
